@@ -1,0 +1,68 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future Savings Predictor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Future Savings Predictor</h1>
+        <form id="predictionForm">
+            <div class="form-group">
+                <label for="current_income">Current Income:</label>
+                <input type="number" id="current_income" placeholder="Current Income" required>
+            </div>
+            <div class="form-group">
+                <label for="monthly_expenses">Monthly Expenses:</label>
+                <input type="number" id="monthly_expenses" placeholder="Monthly Expenses" required>
+            </div>
+            <div class="form-group">
+                <label for="current_savings">Current Savings:</label>
+                <input type="number" id="current_savings" placeholder="Current Savings" required>
+            </div>
+            <div class="form-group">
+                <label for="loan_amount">Loan Amount:</label>
+                <input type="number" id="loan_amount" placeholder="Loan Amount" required>
+            </div>
+            <div class="form-group">
+                <label for="credit_score">Credit Score:</label>
+                <input type="number" id="credit_score" placeholder="Credit Score" required>
+            </div>
+            <button type="submit">Predict</button>
+        </form>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('predictionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const data = {
+                current_income: parseFloat(document.getElementById('current_income').value),
+                monthly_expenses: parseFloat(document.getElementById('monthly_expenses').value),
+                current_savings: parseFloat(document.getElementById('current_savings').value),
+                loan_amount: parseFloat(document.getElementById('loan_amount').value),
+                credit_score: parseFloat(document.getElementById('credit_score').value)
+            };
+
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerText = `Predicted Future Savings: ${data.future_savings}`;
+            })
+            .catch((error) => {
+                document.getElementById('result').innerText = 'Error: ' + error;
+            });
+        });
+    </script>
+</body>
+</html>
